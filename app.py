@@ -175,10 +175,9 @@ def main():
 
                 # Chart 2: Time Evolution
                 with col_right:
-                    st.subheader("📅 Attack Frequency Over Time")
+                    st.subheader("📅 Attack Frequency Over Time (Daily)")
                     if 'Date et Heure' in df_filtered.columns and not df_filtered['Date et Heure'].isna().all():
-                        # Resample data by hour to count events
-                        time_evolution = df_filtered.set_index('Date et Heure').resample('H').size()
+                        time_evolution = df_filtered.set_index('Date et Heure').resample('D').size()
                         st.line_chart(time_evolution)
                     else:
                         st.warning("Time data invalid or missing.")
