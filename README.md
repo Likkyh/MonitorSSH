@@ -3,10 +3,9 @@
 ![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
 ![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
 
 **MonitorSSH** is an interactive security dashboard built with **Streamlit** that enables system administrators to visualize, analyze, and monitor SSH connection events from parsed log files. It helps identify suspicious activity, aggressive IP addresses, and security trends over time.
-
+The sole purpose of thids repo is to archive this exercise.
 ---
 
 ## 📑 Table of Contents
