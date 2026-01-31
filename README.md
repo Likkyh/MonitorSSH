@@ -41,16 +41,16 @@ The application follows a simple data flow:
 
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────────┐
-│  CSV Log File   │────▶│  Data Loading    │────▶│  Filtering Engine   │
+│  CSV Log File   │────▶│  Data Loading   │────▶│  Filtering Engine  │
 │ (datasetssh.csv)│     │  (Cached/Parsed) │     │  (Date/Event/IP)    │
 └─────────────────┘     └──────────────────┘     └──────────┬──────────┘
                                                             │
                         ┌───────────────────────────────────┘
                         ▼
     ┌────────────────────────────────────────────────────────────┐
-    │                     STREAMLIT DASHBOARD                     │
+    │                     STREAMLIT DASHBOARD                    │
     │  ┌──────────────────────┐  ┌─────────────────────────────┐ │
-    │  │   📈 Dashboard Tab   │  │     📋 Raw Data Tab         │ │
+    │  │   📈 Dashboard Tab   │  │     📋 Raw Data Tab        │ │
     │  │  • Key Metrics       │  │  • Filtered DataTable       │ │
     │  │  • Top 5 Aggressive  │  │  • CSV Export Button        │ │
     │  │    IPs (Bar Chart)   │  │                             │ │
@@ -206,24 +206,6 @@ Date et Heure,Identifiant Evenement,IP Source,Utilisateur Vise
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Here's how to get started:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`)
-3. **Commit** your changes (`git commit -m 'Add AmazingFeature'`)
-4. **Push** to the branch (`git push origin feature/AmazingFeature`)
-5. **Open** a Pull Request
-
----
-
 ## 📄 License
 
 Distributed under the **MIT License**. See `LICENSE` for more information.
-
----
-
-<p align="center">
-  Made with ❤️ for security monitoring
-</p>
