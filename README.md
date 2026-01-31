@@ -1,88 +1,230 @@
-# 🛡️ MonitorSSH - Log Analysis Dashboard
+# 🛡️ MonitorSSH - SSH Log Analysis Dashboard
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
 
-**MonitorSSH** is an interactive security dashboard built with **Streamlit**. It allows administrators to visualize SSH connection events, identify aggressive IP addresses, and analyze security trends over time using parsed log data.
+**MonitorSSH** is an interactive security dashboard built with **Streamlit** that enables system administrators to visualize, analyze, and monitor SSH connection events from parsed log files. It helps identify suspicious activity, aggressive IP addresses, and security trends over time.
+
+---
+
+## 📑 Table of Contents
+
+- [Features](#-features)
+- [How It Works](#-how-it-works)
+- [Project Structure](#-project-structure)
+- [Installation](#️-installation)
+- [Data Format](#-data-format)
+- [Usage](#-usage)
+- [Screenshots](#-screenshots)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+---
 
 ## ✨ Features
 
-* **📊 Interactive Dashboard**: visualize security metrics with a clean, wide-layout interface.
-* **🔍 Advanced Filtering**: Filter logs by **Date Range**, **Event ID**, or **Source IP**.
-* **📈 Visual Analytics**:
-    * **Aggressive IPs**: Bar charts identifying top potential attackers.
-    * **Time Series**: Line charts showing attack frequency over time.
-    * **Key Metrics**: Instant view of total events, unique IPs, and top targeted users.
-* **📥 Data Export**: Download filtered datasets directly as CSV files.
-* **⚡ Performance**: Uses caching to ensure fast load times for large datasets.
+| Feature | Description |
+|---------|-------------|
+| 📊 **Interactive Dashboard** | Wide-layout interface with tabs for visual analytics and raw data |
+| 🔍 **Advanced Filtering** | Filter logs by date range, event type, or source IP addresses |
+| 📈 **Visual Analytics** | Bar charts for top aggressive IPs, line charts for attack frequency over time |
+| 📋 **Key Metrics** | Instant view of total events, unique IPs, and most targeted users |
+| 📥 **CSV Export** | Download filtered datasets for offline analysis |
+| ⚡ **Cached Performance** | Uses `@st.cache_data` for fast load times with large datasets |
+
+---
+
+## 🔧 How It Works
+
+The application follows a simple data flow:
+
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────────┐
+│  CSV Log File   │────▶│  Data Loading    │────▶│  Filtering Engine   │
+│ (datasetssh.csv)│     │  (Cached/Parsed) │     │  (Date/Event/IP)    │
+└─────────────────┘     └──────────────────┘     └──────────┬──────────┘
+                                                            │
+                        ┌───────────────────────────────────┘
+                        ▼
+    ┌────────────────────────────────────────────────────────────┐
+    │                     STREAMLIT DASHBOARD                     │
+    │  ┌──────────────────────┐  ┌─────────────────────────────┐ │
+    │  │   📈 Dashboard Tab   │  │     📋 Raw Data Tab         │ │
+    │  │  • Key Metrics       │  │  • Filtered DataTable       │ │
+    │  │  • Top 5 Aggressive  │  │  • CSV Export Button        │ │
+    │  │    IPs (Bar Chart)   │  │                             │ │
+    │  │  • Attack Frequency  │  │                             │ │
+    │  │    (Line Chart)      │  │                             │ │
+    │  └──────────────────────┘  └─────────────────────────────┘ │
+    └────────────────────────────────────────────────────────────┘
+```
+
+### Core Components
+
+1. **`load_data()`** - Cached function that:
+   - Reads the CSV file from `src/datasetssh.csv`
+   - Parses the `Date et Heure` column to datetime format (`dd/mm/yy - HH:MM:SS`)
+   - Handles file errors gracefully with user-friendly messages
+
+2. **Sidebar Filters** - Three filtering mechanisms:
+   - **Date Range**: Select start and end dates from the dataset
+   - **Event ID**: Dropdown to filter by event type (e.g., "Failed Password", "Invalid User")
+   - **Source IP**: Multi-select for specific IP addresses
+
+3. **Dashboard Tab** - Displays:
+   - **Key Metrics**: Total events, unique IPs, most targeted user
+   - **Top 5 Aggressive IPs**: Bar chart visualization
+   - **Attack Frequency Over Time**: Daily resampled line chart
+
+4. **Raw Data Tab** - Provides:
+   - Interactive filtered data table
+   - CSV download button for exporting filtered results
+
+---
+
+## 📂 Project Structure
+
+```plaintext
+MonitorSSH/
+│
+├── src/
+│   └── datasetssh.csv      # 📄 Input CSV log file (Required)
+│
+├── app.py                  # 🚀 Main Streamlit application
+│                           #    - Page configuration
+│                           #    - Data loading (cached)
+│                           #    - Filtering logic
+│                           #    - Dashboard rendering
+│
+├── requirements.txt        # 📦 Python dependencies
+│                           #    (streamlit, pandas)
+│
+└── README.md               # 📖 Project documentation
+```
+
+### File Descriptions
+
+| File | Purpose |
+|------|---------|
+| `app.py` | The main application entry point. Contains all dashboard logic including data loading, filtering, visualization, and UI components (~130 lines) |
+| `src/datasetssh.csv` | The input dataset containing parsed SSH log entries. Must follow the required column format (see [Data Format](#-data-format)) |
+| `requirements.txt` | Lists Python package dependencies (`streamlit`, `pandas`) |
+
+---
 
 ## 🛠️ Installation
 
 ### Prerequisites
 
-* Python 3.8 or higher
-* pip (Python Package Manager)
+- **Python 3.8** or higher
+- **pip** (Python package manager)
 
-### Setup
+### Setup Steps
 
-1.  **Clone the repository**
-    ```bash
-    git clone [https://github.com/Likkyh/MonitorSSH.git](https://github.com/Likkyh/MonitorSSH.git)
-    cd MonitorSSH
-    ```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Likkyh/MonitorSSH.git
+   cd MonitorSSH
+   ```
 
-2.  **Install dependencies**
-    ```bash
-    pip install -r requirements.txt
-    ```
-    *(If `requirements.txt` is missing, install manually: `pip install streamlit pandas`)*
+2. **Create a virtual environment** (recommended)
+   ```bash
+   python -m venv venv
+   
+   # On Windows:
+   venv\Scripts\activate
+   
+   # On Linux/macOS:
+   source venv/bin/activate
+   ```
 
-3.  **Prepare your Data**
-    Ensure your log file is placed at `src/datasetssh.csv`. The CSV must contain the following columns:
-    * `Date et Heure` (Format: `dd/mm/yy - HH:MM:SS`)
-    * `Identifiant Evenement`
-    * `IP Source`
-    * `Utilisateur Vise`
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+   
+   Or install manually:
+   ```bash
+   pip install streamlit pandas
+   ```
+
+4. **Add your log data**  
+   Place your parsed SSH log file at `src/datasetssh.csv` (see format below)
+
+---
+
+## 📋 Data Format
+
+The application expects a CSV file at `src/datasetssh.csv` with the following **required columns**:
+
+| Column Name | Description | Example |
+|-------------|-------------|---------|
+| `Date et Heure` | Timestamp of the event | `10/12/25 - 06:55:46` |
+| `Identifiant Evenement` | Type of SSH event | `Failed Password`, `Invalid User` |
+| `IP Source` | Origin IP address | `192.168.1.50` |
+| `Utilisateur Vise` | Targeted username | `root`, `admin` |
+
+### Example CSV Content
+
+```csv
+Date et Heure,Identifiant Evenement,IP Source,Utilisateur Vise
+10/12/25 - 06:55:46,Failed Password,192.168.1.50,root
+10/12/25 - 06:56:00,Invalid User,10.0.0.5,admin
+10/12/25 - 07:12:33,Failed Password,203.0.113.42,root
+10/12/25 - 07:15:20,Invalid User,198.51.100.23,guest
+```
+
+> ⚠️ **Important**: The date format must be exactly `dd/mm/yy - HH:MM:SS` for proper parsing.
+
+---
 
 ## 🚀 Usage
 
-Run the dashboard using the Streamlit command line tools:
+1. **Launch the dashboard**
+   ```bash
+   streamlit run app.py
+   ```
 
-```bash
-streamlit run app.py
+2. **Access the application**  
+   The dashboard opens automatically in your browser at `http://localhost:8501`
 
-The application will launch automatically in your default web browser (usually at http://localhost:8501).
-📂 Project Structure
-Plaintext
+3. **Explore the data**
+   - Use the **sidebar filters** to narrow down events
+   - Switch between **Dashboard** and **Raw Data** tabs
+   - **Download** filtered results using the export button
 
-MonitorSSH/
-├── src/
-│   └── datasetssh.csv    # Input data file (Required)
-├── app.py                # Main Dashboard logic
-├── requirements.txt      # Python dependencies
-└── README.md             # Documentation
+---
 
-📋 Data Format
+## 📸 Screenshots
 
-The application expects a CSV file (src/datasetssh.csv) with specific column headers to function correctly. Ensure your CSV follows this structure:
-Date et Heure	Identifiant Evenement	IP Source	Utilisateur Vise
-10/12/25 - 06:55:46	Failed Password	192.168.1.50	root
-10/12/25 - 06:56:00	Invalid User	10.0.0.5	admin
-🤝 Contributing
+*Dashboard overview with key metrics and visualizations*
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+| Dashboard Tab | Raw Data Tab |
+|---------------|--------------|
+| Key metrics, aggressive IPs chart, time series | Interactive data table with export |
 
-    Fork the project
+---
 
-    Create your Feature Branch (git checkout -b feature/AmazingFeature)
+## 🤝 Contributing
 
-    Commit your changes (git commit -m 'Add some AmazingFeature')
+Contributions are welcome! Here's how to get started:
 
-    Push to the Branch (git push origin feature/AmazingFeature)
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`)
+3. **Commit** your changes (`git commit -m 'Add AmazingFeature'`)
+4. **Push** to the branch (`git push origin feature/AmazingFeature`)
+5. **Open** a Pull Request
 
-    Open a Pull Request
+---
 
-📄 License
+## 📄 License
 
-Distributed under the MIT License. See LICENSE for more information.
+Distributed under the **MIT License**. See `LICENSE` for more information.
+
+---
+
+<p align="center">
+  Made with ❤️ for security monitoring
+</p>
